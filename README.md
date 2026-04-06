@@ -1,109 +1,93 @@
 # TTS Toolkit
 
-Turn any text into narrated audio (MP3) or video (MP4) using AI text-to-speech.
-
-Built as a [Claude Code skill](https://docs.anthropic.com/en/docs/claude-code) — Claude reads your content, writes the narration, and generates the output. You can also run the script standalone.
+A Claude Code skill that turns any text content into narrated audio (MP3) or video (MP4) using AI text-to-speech. Give Claude a chapter, article, or document and it handles everything — writing the narration, generating the audio, and packaging the output.
 
 ## What It Does
 
-1. **Reads your content** — article, textbook chapter, documentation, blog post, etc.
-2. **Writes narration** — optimized for natural-sounding TTS (sentence length, abbreviations, flow)
-3. **Generates output** — your choice:
-   - **MP3** — Audio file for LMS embeds, podcast feeds, or downloads
-   - **MP4** — Static title card + narrated audio for YouTube or video players
-4. **Creates a transcript** — clean text file for captions or accessibility
+1. **Reads your content** — textbook chapter, article, handout, blog post, etc.
+2. **Writes the narration** — Claude prepares a TTS-optimized script automatically
+3. **You choose the format:**
+   - **MP3** — Audio file you can embed in your LMS, share as a download, or add to a podcast feed
+   - **MP4** — A title card video with narrated audio, ready for YouTube or any video player
+4. **Generates a transcript** — clean text file for captions or accessibility
 
-## Quick Start
+## Setup
 
-### Prerequisites
+### Requirements
 
+- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed
 - Python 3.10+
-- [ffmpeg](https://ffmpeg.org/download.html) installed and on PATH
-- A Google API key (for Gemini TTS) or Mistral API key
+- [ffmpeg](https://ffmpeg.org/download.html) installed
+- A Google API key ([get one here](https://aistudio.google.com/apikey)) for Gemini TTS
 
-### Setup
+### Install the Skill
+
+Clone this repo and install dependencies:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/tts-toolkit.git
+git clone https://github.com/Brehove/tts-toolkit.git
 cd tts-toolkit
 pip install -r requirements.txt
+```
+
+Set up your API key:
+
+```bash
 cp .env.example .env
-# Edit .env with your API key(s)
 ```
 
-### Usage
+Open `.env` in any text editor and paste in your Google API key.
 
-**Audio only (MP3):**
+### Register with Claude Code
+
+Copy the skill into your Claude Code skills directory:
 
 ```bash
-python3 scripts/tts_toolkit.py \
-  --title "My Content Title" \
-  --narration narration.txt \
-  --output "My Content - Audio.mp3"
+cp -r . ~/.claude/skills/tts-toolkit
 ```
 
-**Video with title card (MP4):**
+Once installed, Claude will automatically know how to use the skill when you ask it to narrate content.
 
-```bash
-python3 scripts/tts_toolkit.py \
-  --title "My Content Title" \
-  --subtitle "Course Name" \
-  --background cover.jpg \
-  --narration narration.txt \
-  --output "My Content - Audio Companion.mp4"
-```
+## How to Use It
 
-### All Options
+Open Claude Code and tell it what you want narrated. Examples:
 
-| Flag | Description | Default |
-|------|-------------|---------|
-| `--engine` | `gemini` or `mistral` | `gemini` |
-| `--title` | Title (required) | — |
-| `--subtitle` | Subtitle below title (video only) | None |
-| `--background` | Background image for title card (video only) | Solid dark card |
-| `--narration` | Path to narration text file (required) | — |
-| `--output` | Output path — `.mp3` or `.mp4` (required) | — |
-| `--voice` | Voice name | Enceladus (Gemini) / Oliver - Cheerful (Mistral) |
-| `--model` | Model override | Engine-specific |
-| `--no-transcript` | Skip transcript generation | Transcript on |
+- *"Turn this chapter into an audio file"* (paste a URL or file path)
+- *"Make an MP3 of this article for my students"*
+- *"Create a narrated video of Chapter 3 with a title card"*
 
-## Using as a Claude Code Skill
+Claude will:
 
-Copy the `SKILL.md` and `scripts/` directory into your Claude Code skills folder. Claude will:
+1. Read and summarize your content (word count, estimated duration)
+2. Write the narration and show it to you for approval
+3. Ask whether you want **MP3** (audio only) or **MP4** (video with title card)
+4. Generate the file and report the size and duration
 
-1. Read your source content and summarize it
-2. Write TTS-optimized narration following the rules in `references/narration-rules.md`
-3. Ask whether you want MP3 or MP4
-4. Generate the output and report file size/duration
+For video output, you can optionally provide a background image and subtitle (like a course name). If you don't, Claude generates a clean dark title card.
 
-See `SKILL.md` for the full skill workflow.
+## Voice Options
 
-## Writing Good Narration
+The default engine is **Gemini TTS** with the "Enceladus" voice (clear, slightly breathy). You can ask Claude to use a different voice:
 
-The `references/narration-rules.md` file contains guidelines for preparing text for TTS. Key points:
+- *"Use the Kore voice — it's more firm"*
+- *"Switch to Mistral TTS for this one"*
 
-- Keep sentences under 30 words
-- Spell out abbreviations on first use
-- Replace ALL CAPS with regular case
-- Add `[SECTION]` markers between major sections (enables parallel TTS generation)
-- Include brief bridge sentences between sections for natural flow
+**Gemini voices** include Enceladus, Kore, Puck, Zephyr, and 26+ others. **Mistral TTS** is available as an alternative engine (requires a separate Mistral API key and `pip install mistralai`).
 
-## How It Works
+## Uploading to YouTube
 
-- **Parallel TTS**: Splits narration at `[SECTION]` markers, generates audio chunks in parallel
-- **Title cards**: Auto-generated 1920x1080 images with center-cropped backgrounds
-- **Audio**: 24kHz WAV from TTS, re-encoded to MP3 (VBR ~190kbps) or AAC stereo for MP4
-- **Cross-platform**: System font detection for macOS, Linux, and Windows
+For MP4 output, the skill generates a `transcript.txt` alongside the video. To add captions in YouTube:
 
-## TTS Engines
+1. Go to **Subtitles > Add Language > Upload File**
+2. Choose **"Without timing"**
+3. Upload `transcript.txt` — YouTube auto-syncs it to the audio
 
-### Gemini (default)
+## Technical Details
 
-Uses Google's Gemini 2.5 Pro TTS. Voices include Enceladus (breathy), Kore (firm), Puck (upbeat), Zephyr (bright), and 26+ others. Requires a `GOOGLE_API_KEY`.
-
-### Mistral
-
-Uses Mistral's Voxtral TTS. Requires a `MISTRAL_API_KEY`. Install with `pip install mistralai`.
+- **Parallel generation** — long narrations are split into chunks and generated concurrently for speed
+- **Title cards** — auto-generated at 1920x1080; background images are center-cropped without stretching
+- **Audio quality** — MP3 at ~190kbps VBR; MP4 uses 44.1kHz stereo AAC
+- **Cross-platform** — works on macOS, Linux, and Windows
 
 ## License
 
