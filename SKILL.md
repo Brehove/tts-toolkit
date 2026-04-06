@@ -49,7 +49,7 @@ Write the full narration as a plain `.txt` file. Follow the rules in
 `references/narration-rules.md`:
 
 - **Include**: All body text — narrate every paragraph in full
-- **Exclude**: References, figure captions, raw table data
+- **Exclude**: References, figure captions, raw table data, superscripts/footnote markers
 - **TTS formatting**: Sentences <30 words, spell out abbreviations, no ALL CAPS
 - **Flow**: Spoken section markers at major boundaries, brief bridge
   sentences between sections

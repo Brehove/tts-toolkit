@@ -18,6 +18,10 @@ etc.) into narration-ready plain text.
   to the original for the full breakdown."
 - **Figure captions** — do not narrate
 - **Image markers** — strip any bracketed image references
+- **Superscripts and footnote markers** — strip all superscript
+  numbers, footnote references, and endnote markers (e.g., remove
+  `<sup>1</sup>`, `[1]`, `†`, etc.). TTS will read these aloud as
+  numbers or symbols, interrupting the flow of the narration.
 
 ## TTS Formatting
 
