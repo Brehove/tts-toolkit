@@ -1,0 +1,33 @@
+# Environment and secrets
+.env
+*.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Output files
+*.mp3
+*.mp4
+*.wav
+*.txt
+!references/*.md
+!SKILL.md
+!README.md
+!LICENSE
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
