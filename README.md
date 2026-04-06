@@ -1,6 +1,8 @@
 # TTS Toolkit
 
-A Claude Code skill that turns any text content into narrated audio (MP3) or video (MP4) using AI text-to-speech. Give Claude a chapter, article, or document and it handles everything — writing the narration, generating the audio, and packaging the output.
+A Claude skill that turns any text content into narrated audio (MP3) or video (MP4) using AI text-to-speech. Give Claude a chapter, article, or document and it handles everything — writing the narration, generating the audio, and packaging the output.
+
+Works with both **Claude Code** (CLI/desktop) and **Claude Cowork** (web/desktop GUI).
 
 ## What It Does
 
@@ -11,18 +13,30 @@ A Claude Code skill that turns any text content into narrated audio (MP3) or vid
    - **MP4** — A title card video with narrated audio, ready for YouTube or any video player
 4. **Generates a transcript** — clean text file for captions or accessibility
 
-## Setup
+## Requirements
 
-### Requirements
-
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed
 - Python 3.10+
-- [ffmpeg](https://ffmpeg.org/download.html) installed
+- [ffmpeg](https://ffmpeg.org/download.html) installed on your computer
 - A Google API key ([get one here](https://aistudio.google.com/apikey)) for Gemini TTS
 
-### Install the Skill
+## Installation
 
-Clone this repo and install dependencies:
+### Option A: Claude Cowork (recommended for most faculty)
+
+Cowork is the visual, non-terminal version of Claude — available at [claude.ai](https://claude.ai) and in the Claude desktop app.
+
+1. **Download the skill**: Click the green **Code** button on this GitHub page, then **Download ZIP**.
+2. **Open Cowork**: Go to [claude.ai](https://claude.ai) or open the Claude desktop app and switch to the **Cowork** tab.
+3. **Upload the skill**: Click **Customize** in the left sidebar → **Skills** → the **+** button → **+ Create skill** → upload the ZIP file you downloaded.
+4. **Set up your API key**: When you first use the skill, Claude will ask for your Google API key. You can get one at [Google AI Studio](https://aistudio.google.com/apikey).
+
+Once installed, the skill appears in your Skills list and Claude will use it automatically when you ask it to narrate content.
+
+### Option B: Claude Code (CLI / desktop app)
+
+Claude Code is the terminal-based version for users comfortable with the command line.
+
+1. **Clone and install dependencies**:
 
 ```bash
 git clone https://github.com/Brehove/tts-toolkit.git
@@ -30,7 +44,7 @@ cd tts-toolkit
 pip install -r requirements.txt
 ```
 
-Set up your API key:
+2. **Set up your API key**:
 
 ```bash
 cp .env.example .env
@@ -38,9 +52,7 @@ cp .env.example .env
 
 Open `.env` in any text editor and paste in your Google API key.
 
-### Register with Claude Code
-
-Copy the skill into your Claude Code skills directory:
+3. **Register the skill**:
 
 ```bash
 cp -r . ~/.claude/skills/tts-toolkit
@@ -50,7 +62,7 @@ Once installed, Claude will automatically know how to use the skill when you ask
 
 ## How to Use It
 
-Open Claude Code and tell it what you want narrated. Examples:
+Tell Claude what you want narrated. Examples:
 
 - *"Turn this chapter into an audio file"* (paste a URL or file path)
 - *"Make an MP3 of this article for my students"*
