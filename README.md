@@ -33,20 +33,6 @@ You'll need a key from one of these TTS providers:
 
 Both providers offer free usage tiers, so you can experiment before setting up billing.
 
-## What Does It Cost?
-
-Here's what the same long chapter (6,400 words, 43 minutes of audio) costs across different TTS services:
-
-| Service | Est. Cost | Notes |
-|---|---|---|
-| Mistral Voxtral | ~$0.58 | Currently free tier covers most usage |
-| Gemini 2.5 Flash TTS | ~$0.67 | Good quality, half the cost of Pro |
-| Gemini 2.5 Pro TTS | ~$1.34 | Best quality, default in this skill |
-| ElevenLabs Flash | ~$2.16 | Dedicated TTS platform |
-| ElevenLabs Multilingual v2 | ~$4.32 | Highest quality, highest cost |
-
-Most textbook chapters are shorter than this example. A typical chapter through Gemini Pro runs about $0.25. For a full 15-chapter textbook, expect roughly $0 with Mistral, $10 with Gemini Flash, or $20 with Gemini Pro.
-
 ## Installation
 
 ### What You'll Need
