@@ -1,8 +1,6 @@
 # TTS Toolkit
 
-Turn any text content into narrated audio (MP3) or video (MP4) using AI text-to-speech. Give Claude or Codex a chapter, article, or document and it preserves your text, prepares it for audio (stripping footnotes, handling tables, formatting for natural speech), and generates the output.
-
-Works with **Claude Code**, **Claude Cowork**, and **OpenAI Codex**.
+A skill for **Claude Code**, **Claude Cowork**, or **OpenAI Codex** that turns any text content into narrated audio (MP3) or video (MP4) using AI text-to-speech. Give Claude or Codex a chapter, article, or document and it preserves your text, prepares it for audio (stripping footnotes, handling tables, formatting for natural speech), and generates the output.
 
 ## How It Works
 
