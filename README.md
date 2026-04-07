@@ -90,14 +90,16 @@ Tell Claude (or Codex) what you want narrated. Examples:
 
 For video output, you can optionally provide a background image and subtitle (like a course name). If you don't, Claude generates a clean dark title card.
 
-## Voice Options
+## Engine and Voice Options
 
-The default engine is **Gemini TTS** with the "Enceladus" voice (clear, slightly breathy). You can ask Claude to use a different voice:
+The skill defaults to **Gemini 2.5 Pro TTS** (best quality). To use a cheaper engine, just ask:
+
+- *"Use Gemini Flash instead"* — about half the cost of Pro, still good quality
+- *"Switch to Mistral TTS"* — cheapest option, currently free for most usage (requires a Mistral API key and `pip install mistralai`)
+
+The default voice is "Enceladus" (clear, slightly breathy). **Gemini voices** include Enceladus, Kore, Puck, Zephyr, and 26+ others. You can ask Claude to switch:
 
 - *"Use the Kore voice, it's more firm"*
-- *"Switch to Mistral TTS for this one"*
-
-**Gemini voices** include Enceladus, Kore, Puck, Zephyr, and 26+ others. **Mistral TTS** is available as an alternative engine (requires a Mistral API key and `pip install mistralai`).
 
 ## Uploading to YouTube
 

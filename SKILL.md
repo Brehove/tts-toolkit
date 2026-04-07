@@ -95,7 +95,7 @@ python3 scripts/tts_toolkit.py \
 
 | Flag | Description | Default |
 |------|-------------|---------|
-| `--engine` | `gemini` or `mistral` | `gemini` |
+| `--engine` | `gemini`, `gemini-flash`, or `mistral` | `gemini` |
 | `--voice` | Voice name | Enceladus (Gemini) / Oliver - Cheerful (Mistral) |
 | `--model` | Model override | Engine-specific |
 | `--background` | Background image for title card | Solid dark card |

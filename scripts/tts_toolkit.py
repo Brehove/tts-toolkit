@@ -65,6 +65,7 @@ if _env_file.exists():
 DEFAULTS = {
     "mistral": {"voice": "Oliver - Cheerful", "model": "voxtral-mini-tts-2603", "workers": 4},
     "gemini": {"voice": "Enceladus", "model": "gemini-2.5-pro-preview-tts", "workers": 2},
+    "gemini-flash": {"voice": "Enceladus", "model": "gemini-2.5-flash-preview-tts", "workers": 3},
 }
 
 BG_COLOR = (11, 17, 32)  # Dark blue-black
@@ -390,8 +391,8 @@ def main():
         description="Generate narrated audio (MP3) or video (MP4) from text using TTS",
         epilog="Output format is determined by file extension: .mp3 for audio only, .mp4 for video.",
     )
-    parser.add_argument("--engine", choices=["mistral", "gemini"], default="gemini",
-                        help="TTS engine (default: gemini)")
+    parser.add_argument("--engine", choices=["mistral", "gemini", "gemini-flash"], default="gemini",
+                        help="TTS engine: gemini (Pro, default), gemini-flash (cheaper), or mistral")
     parser.add_argument("--title", required=True, help="Title displayed on the title card / used in metadata")
     parser.add_argument("--subtitle", default="", help="Subtitle shown below the title (video only)")
     parser.add_argument("--background", default="", help="Background image for the title card (video only)")
