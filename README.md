@@ -1,40 +1,74 @@
 # TTS Toolkit
 
-A Claude skill that turns any text content into narrated audio (MP3) or video (MP4) using AI text-to-speech. Give Claude a chapter, article, or document and it handles everything — writing the narration, generating the audio, and packaging the output.
+Turn any text content into narrated audio (MP3) or video (MP4) using AI text-to-speech. Give Claude or Codex a chapter, article, or document and it handles everything: writing the narration, generating the audio, and packaging the output.
 
-Works with both **Claude Code** (CLI/desktop) and **Claude Cowork** (web/desktop GUI).
+Works with **Claude Code**, **Claude Cowork**, and **OpenAI Codex**.
 
-## What It Does
+## How It Works
 
-1. **Reads your content** — textbook chapter, article, handout, blog post, etc.
-2. **Writes the narration** — Claude prepares a TTS-optimized script automatically
-3. **You choose the format:**
-   - **MP3** — Audio file you can embed in your LMS, share as a download, or add to a podcast feed
-   - **MP4** — A title card video with narrated audio, ready for YouTube or any video player
-4. **Generates a transcript** — clean text file for captions or accessibility
+You don't write code. You don't read API documentation. You tell Claude (or Codex) what you want in plain English, and it handles the technical parts.
 
-## Requirements
+For example, you could say:
 
-- Python 3.10+
-- [ffmpeg](https://ffmpeg.org/download.html) installed on your computer
-- A Google API key ([get one here](https://aistudio.google.com/apikey)) for Gemini TTS
+> "I have a chapter saved as chapter3.txt. Convert it to an MP3 file."
+
+Claude reads the chapter, prepares a narration-ready version of the text, calls the TTS API, and saves the audio file to your computer. If you want video instead of audio, it generates an MP4 with a title card, ready for YouTube.
+
+Here's what happens step by step:
+
+1. **Claude reads your content** and summarizes it (word count, estimated duration)
+2. **Claude writes the narration** — optimized for natural-sounding speech — and shows it to you for approval
+3. **You choose the format:** MP3 (audio only) or MP4 (video with title card)
+4. **Claude generates the file** and reports the size and duration
+5. **A transcript is created** alongside the audio, ready for YouTube captions or accessibility
+
+## What Is an API Key?
+
+An API key is a password that gives software permission to access a service on your behalf. You sign up at the provider's website, generate a key, and paste it into your setup. That's it.
+
+You'll need a key from one of these TTS providers:
+
+- **Google Gemini** (recommended) — [Get a key at Google AI Studio](https://aistudio.google.com/apikey). Best voice quality. A typical textbook chapter costs around $0.25.
+- **Mistral** (cheapest) — [Get a key at Mistral Console](https://console.mistral.ai/home). Currently free for most usage. Good quality, slightly flatter intonation than Gemini.
+
+Both providers offer free usage tiers, so you can experiment before setting up billing.
+
+## What Does It Cost?
+
+Here's what the same long chapter (6,400 words, 43 minutes of audio) costs across different TTS services:
+
+| Service | Est. Cost | Notes |
+|---|---|---|
+| Mistral Voxtral | ~$0.58 | Currently free tier covers most usage |
+| Gemini 2.5 Flash TTS | ~$0.67 | Good quality, half the cost of Pro |
+| Gemini 2.5 Pro TTS | ~$1.34 | Best quality, default in this skill |
+| ElevenLabs Flash | ~$2.16 | Dedicated TTS platform |
+| ElevenLabs Multilingual v2 | ~$4.32 | Highest quality, highest cost |
+
+Most textbook chapters are shorter than this example. A typical chapter through Gemini Pro runs about $0.25. For a full 15-chapter textbook, expect roughly $0 with Mistral, $10 with Gemini Flash, or $20 with Gemini Pro.
 
 ## Installation
 
+### What You'll Need
+
+- **An AI coding tool**: Claude Code, Claude Cowork, or OpenAI Codex. This is what talks to the API for you. If you don't have one yet, [Claude Cowork](https://claude.ai) is the most accessible option (visual interface, no terminal required).
+- **An API key** from Google or Mistral (see above).
+- **Python 3.10+** and **[ffmpeg](https://ffmpeg.org/download.html)** installed on your computer. If you're not sure whether you have these, ask Claude or Codex: *"Do I have Python and ffmpeg installed?"* It will check for you.
+
 ### Option A: Claude Cowork (recommended for most faculty)
 
-Cowork is the visual, non-terminal version of Claude — available at [claude.ai](https://claude.ai) and in the Claude desktop app.
+Cowork is the visual, non-terminal version of Claude, available at [claude.ai](https://claude.ai) and in the Claude desktop app.
 
 1. **Download the skill**: Click the green **Code** button on this GitHub page, then **Download ZIP**.
 2. **Open Cowork**: Go to [claude.ai](https://claude.ai) or open the Claude desktop app and switch to the **Cowork** tab.
-3. **Upload the skill**: Click **Customize** in the left sidebar → **Skills** → the **+** button → **+ Create skill** → upload the ZIP file you downloaded.
-4. **Set up your API key**: When you first use the skill, Claude will ask for your Google API key. You can get one at [Google AI Studio](https://aistudio.google.com/apikey).
+3. **Upload the skill**: Click **Customize** in the left sidebar, then **Skills**, then the **+** button, then **+ Create skill**, and upload the ZIP file you downloaded.
+4. **Set up your API key**: When you first use the skill, Claude will ask for your API key. Paste it in when prompted.
 
 Once installed, the skill appears in your Skills list and Claude will use it automatically when you ask it to narrate content.
 
 ### Option B: Claude Code (CLI / desktop app)
 
-Claude Code is the terminal-based version for users comfortable with the command line.
+Claude Code is the terminal-based version. If you're comfortable with the command line:
 
 1. **Clone and install dependencies**:
 
@@ -50,7 +84,7 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Open `.env` in any text editor and paste in your Google API key.
+Open `.env` in any text editor and paste in your API key.
 
 3. **Register the skill**:
 
@@ -58,22 +92,17 @@ Open `.env` in any text editor and paste in your Google API key.
 cp -r . ~/.claude/skills/tts-toolkit
 ```
 
-Once installed, Claude will automatically know how to use the skill when you ask it to narrate content.
+### Option C: OpenAI Codex
 
-## How to Use It
+If you use Codex instead of Claude, you can still use this toolkit. Clone the repo, install the dependencies, and point Codex at the `SKILL.md` file. Codex will follow the same workflow.
 
-Tell Claude what you want narrated. Examples:
+## Using It
 
-- *"Turn this chapter into an audio file"* (paste a URL or file path)
+Tell Claude (or Codex) what you want narrated. Examples:
+
+- *"Turn this chapter into an audio file"*
 - *"Make an MP3 of this article for my students"*
 - *"Create a narrated video of Chapter 3 with a title card"*
-
-Claude will:
-
-1. Read and summarize your content (word count, estimated duration)
-2. Write the narration and show it to you for approval
-3. Ask whether you want **MP3** (audio only) or **MP4** (video with title card)
-4. Generate the file and report the size and duration
 
 For video output, you can optionally provide a background image and subtitle (like a course name). If you don't, Claude generates a clean dark title card.
 
@@ -81,10 +110,10 @@ For video output, you can optionally provide a background image and subtitle (li
 
 The default engine is **Gemini TTS** with the "Enceladus" voice (clear, slightly breathy). You can ask Claude to use a different voice:
 
-- *"Use the Kore voice — it's more firm"*
+- *"Use the Kore voice, it's more firm"*
 - *"Switch to Mistral TTS for this one"*
 
-**Gemini voices** include Enceladus, Kore, Puck, Zephyr, and 26+ others. **Mistral TTS** is available as an alternative engine (requires a separate Mistral API key and `pip install mistralai`).
+**Gemini voices** include Enceladus, Kore, Puck, Zephyr, and 26+ others. **Mistral TTS** is available as an alternative engine (requires a Mistral API key and `pip install mistralai`).
 
 ## Uploading to YouTube
 
