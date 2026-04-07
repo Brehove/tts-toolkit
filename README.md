@@ -1,6 +1,6 @@
 # TTS Toolkit
 
-Turn any text content into narrated audio (MP3) or video (MP4) using AI text-to-speech. Give Claude or Codex a chapter, article, or document and it handles everything: writing the narration, generating the audio, and packaging the output.
+Turn any text content into narrated audio (MP3) or video (MP4) using AI text-to-speech. Give Claude or Codex a chapter, article, or document and it preserves your text, prepares it for audio (stripping footnotes, handling tables, formatting for natural speech), and generates the output.
 
 Works with **Claude Code**, **Claude Cowork**, and **OpenAI Codex**.
 
@@ -17,7 +17,7 @@ Claude reads the chapter, prepares a narration-ready version of the text, calls 
 Here's what happens step by step:
 
 1. **Claude reads your content** and summarizes it (word count, estimated duration)
-2. **Claude writes the narration** — optimized for natural-sounding speech — and shows it to you for approval
+2. **Claude prepares it for audio** — your text is preserved in full, but footnotes, superscripts, and raw table data are stripped, and formatting is adjusted for natural-sounding speech. You review and approve before anything is generated.
 3. **You choose the format:** MP3 (audio only) or MP4 (video with title card)
 4. **Claude generates the file** and reports the size and duration
 5. **A transcript is created** alongside the audio, ready for YouTube captions or accessibility
