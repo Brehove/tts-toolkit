@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tts-toolkit"
+version = "0.2.0"
+description = "Local-first text-to-audio for teaching, OER, LMS, and accessible course materials."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{ name = "TTS Toolkit contributors" }]
+dependencies = [
+  "beautifulsoup4>=4.12.0",
+  "defusedxml>=0.7.1",
+  "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
+  "kokoro>=0.9.4",
+  "google-genai>=1.0.0",
+  "markdown>=3.6",
+  "mistralai>=1.0.0",
+  "numpy>=1.24.0",
+  "openai>=1.0.0",
+  "Pillow>=10.0.0",
+  "pypdf>=4.0.0",
+  "python-dotenv>=1.0.0",
+  "requests>=2.31.0",
+  "soundfile>=0.12.0"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0"
+]
+
+[project.scripts]
+tts-toolkit = "tts_toolkit.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["tts_toolkit*"]

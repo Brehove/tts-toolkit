@@ -1,134 +1,100 @@
 ---
 name: tts-toolkit
 description: >
-  Turn any text content into narrated audio (MP3) or a static-image video
-  (MP4) with a title card. Supports Gemini and Mistral TTS engines.
-  Use when someone says "read this aloud", "make an audio version",
-  "narrate this", "audio companion", "generate a voiceover", or wants
-  to convert written content into listenable audio for students,
-  audiences, or accessibility purposes.
+  Turn Markdown, TXT, HTML, EPUB, or PDF into narration-ready text and LMS/OER-ready
+  audio. Use when someone asks to make an MP3, audio companion, narrated
+  reading, static-title-card MP4, or text-to-speech version of course
+  materials, OER pages, articles, chapters, module pages, or other
+  educational text. Defaults to local Kokoro TTS and supports optional
+  ElevenLabs, OpenAI, Gemini, and Mistral engines.
 ---
 
 # TTS Toolkit
 
-Convert any text content into narrated audio or video. Two output modes:
+Use this skill to convert educational text into accessible audio while
+preserving a reviewable transcript-first workflow.
 
-- **Audio (MP3)** — A standalone audio file, ready to share or embed in
-  an LMS, podcast feed, or website.
-- **Video (MP4)** — A static title card with narrated audio, suitable
-  for YouTube, LMS video players, or any platform that expects video.
+## Inputs
 
-## Prerequisites
+Accepted source formats:
 
-- Python 3.10+
-- `pip install google-genai python-dotenv Pillow` (for Gemini engine)
-- `pip install mistralai` (optional, for Mistral engine)
-- `ffmpeg` and `ffprobe` on PATH
-- API key in `.env` or environment:
-  - Gemini (default): `GOOGLE_API_KEY`
-  - Mistral: `MISTRAL_API_KEY`
+- Markdown: `.md`, `.markdown`
+- Plain text: `.txt`
+- HTML: `.html`, `.htm`
+- EPUB: `.epub`
+- PDF: `.pdf`
+
+If the user provides a webpage, exported chapter, LMS page, OER text, or
+article, save or identify the local source before running the CLI.
+
+Prefer Markdown, TXT, or HTML when available. EPUB is usually reliable because
+it is packaged HTML. Treat PDF as best-effort for born-digital PDFs; scanned
+PDFs need OCR first and complex layouts require careful transcript review.
 
 ## Workflow
 
-### Step 1: Prepare the Content
-
-Read the source content (webpage, document, chapter, article, etc.)
-and present a summary to the user:
-
-| Section | Title | Words | Est. Time |
-|---------|-------|-------|-----------|
-| 1       | Introduction | 250 | 1:40 |
-| ...     | ...   | ...   | ...       |
-| **Total** | | **3200** | **21:20** |
-
-Estimate narration time at 150 words/minute.
-
-### Step 2: Write Narration
-
-Write the full narration as a plain `.txt` file. Follow the rules in
-`references/narration-rules.md`:
-
-- **Include**: All body text — narrate every paragraph in full
-- **Exclude**: References, figure captions, raw table data, superscripts/footnote markers
-- **TTS formatting**: Sentences <30 words, spell out abbreviations, no ALL CAPS
-- **Flow**: Spoken section markers at major boundaries, brief bridge
-  sentences between sections
-- **Section markers**: Insert `[SECTION]` on its own line between major
-  sections. The script uses these as chunk boundaries for parallel TTS.
-
-**GATE**: The user approves the narration text before generation.
-
-### Step 3: Choose Output Format
-
-Ask the user:
-
-> **Would you like audio only (MP3) or a narrated video with a title card (MP4)?**
-
-- **MP3** — Faster to generate, smaller file, ideal for LMS audio
-  embeds, podcast feeds, or download links.
-- **MP4** — Includes a title card image, suitable for YouTube or video
-  players. Optionally provide a background image and subtitle.
-
-### Step 4: Generate
-
-**Audio only (MP3):**
+1. Inspect the source and estimate words and listening time at 150 words per minute.
+2. Prepare narration with:
 
 ```bash
-python3 scripts/tts_toolkit.py \
-  --title "Content Title" \
-  --narration narration.txt \
-  --output "Content Title - Audio.mp3"
+tts-toolkit prepare path/to/source.md
 ```
 
-**Video with title card (MP4):**
+3. Review the generated narration transcript. Follow
+   `references/narration-rules.md` when editing: preserve body text, strip
+   references and footnote markers, replace tables with brief spoken
+   placeholders, and use `[SECTION]` between major sections.
+4. Ask the user to approve the narration before rendering long audio.
+5. Render MP3 by default:
 
 ```bash
-python3 scripts/tts_toolkit.py \
-  --title "Content Title" \
-  --subtitle "Course or Source Name" \
-  --background background.jpg \
-  --narration narration.txt \
-  --output "Content Title - Audio Companion.mp4"
+tts-toolkit render path/to/source_narration.txt --output path/to/source.mp3
 ```
 
-**Flags:**
+Use MP4 only when the user asks for a video/title-card version.
 
-| Flag | Description | Default |
-|------|-------------|---------|
-| `--engine` | `gemini`, `gemini-flash`, or `mistral` | `gemini` |
-| `--voice` | Voice name | Enceladus (Gemini) / Oliver - Cheerful (Mistral) |
-| `--model` | Model override | Engine-specific |
-| `--background` | Background image for title card | Solid dark card |
-| `--subtitle` | Text below the title (video only) | None |
-| `--no-transcript` | Skip transcript generation | Transcript on by default |
+## Defaults
 
-**Gemini voices**: Enceladus (breathy), Kore (firm), Puck (upbeat),
-Zephyr (bright), and 26+ others. Gemini TTS accepts natural-language
-style instructions in the prompt.
+- Engine: `kokoro`
+- Voice: `af_heart`
+- Output: MP3, 64kbps mono, suitable for LMS/OER uploads
+- Transcript: clean `.txt` written beside the output
 
-### Step 5: Deliver
+## Optional Engines
 
-Report the output file size and duration. The script auto-generates a
-clean `transcript.txt` (narration with `[SECTION]` markers stripped).
+Use only when requested or clearly useful:
 
-For YouTube uploads: use `transcript.txt` under **Subtitles > Add
-Language > Upload File > "Without timing."** YouTube auto-syncs the
-text to the audio.
+- ElevenLabs: `--engine elevenlabs --voice <voice_id>`
+- OpenAI: `--engine openai --voice cedar`
+- Gemini Flash: `--engine gemini-flash --voice Enceladus`
+- Gemini Pro: `--engine gemini --voice Enceladus`
+- Mistral: `--engine mistral --voice "Oliver - Cheerful"`
 
-## Technical Notes
+Cloud engines require their provider API keys in `.env` or the environment.
 
-- **Chunked parallel TTS**: The script splits narration at `[SECTION]`
-  markers (and further at paragraph boundaries if chunks exceed 4000
-  chars), then generates audio in parallel. Gemini uses 2 workers;
-  Mistral uses 4.
-- **Audio encoding**: Both engines output 24kHz PCM WAV. For MP4, the
-  script re-encodes to 44.1kHz stereo AAC (required for QuickTime
-  compatibility on macOS). For MP3, it encodes with libmp3lame VBR
-  quality 2 (~190kbps).
-- **Background images**: Center-cropped to 1920x1080 without stretching.
-  Portrait images work fine — they get cropped to landscape.
-- **Retries**: Each TTS chunk has 3 retries with exponential backoff
-  (10s, 20s). If chunks still fail, reduce `max_chars` in the
-  `chunk_narration` function.
-- **Cross-platform fonts**: The title card renderer tries macOS, Linux,
-  and Windows system fonts before falling back to Pillow's default.
+## Commands
+
+Check setup:
+
+```bash
+tts-toolkit doctor
+tts-toolkit setup
+```
+
+Prepare only:
+
+```bash
+tts-toolkit prepare reading.html --output reading_narration.txt
+```
+
+Render reviewed narration:
+
+```bash
+tts-toolkit render reading_narration.txt --output reading.mp3
+```
+
+Prepare and render in one step:
+
+```bash
+tts-toolkit convert reading.md --output reading.mp3
+```

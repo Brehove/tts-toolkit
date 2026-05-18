@@ -1,0 +1,14 @@
+beautifulsoup4>=4.12.0
+defusedxml>=0.7.1
+en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
+google-genai>=1.0.0
+kokoro>=0.9.4
+markdown>=3.6
+mistralai>=1.0.0
+numpy>=1.24.0
+openai>=1.0.0
+Pillow>=10.0.0
+pypdf>=4.0.0
+python-dotenv>=1.0.0
+requests>=2.31.0
+soundfile>=0.12.0

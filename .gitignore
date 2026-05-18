@@ -16,11 +16,15 @@ venv/
 *.mp3
 *.mp4
 *.wav
+*.m4a
 *.txt
+*_narration.txt
 !references/*.md
+!skills/**/*.md
 !SKILL.md
 !README.md
 !LICENSE
+!requirements.txt
 
 # OS files
 .DS_Store

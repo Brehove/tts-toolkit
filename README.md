@@ -1,120 +1,170 @@
 # TTS Toolkit
 
-A skill for **Claude Code**, **Claude Cowork**, or **OpenAI Codex** that turns any text content into narrated audio (MP3) or video (MP4) using AI text-to-speech. Give Claude or Codex a chapter, article, or document and it preserves your text, prepares it for audio (stripping footnotes, handling tables, formatting for natural speech), and generates the output.
+Local-first text-to-audio for teaching, OER, LMS, and accessible course materials.
 
-## How It Works
+TTS Toolkit turns **Markdown**, **TXT**, **HTML**, **EPUB**, or **PDF** into a cleaned narration transcript and then renders it as an **MP3** or optional static-title-card **MP4**. It is designed for course readings, web chapters, OER textbook material, articles, module pages, and other educational text that should be easy to upload to an LMS, OER platform, website, podcast feed, or video host.
 
-You don't write code. You don't read API documentation. You tell Claude (or Codex) what you want in plain English, and it handles the technical parts.
+Kokoro is the default engine: local, free, fast, and consistent for long educational readings. Kokoro is an [open-weight](https://huggingface.co/hexgrad/Kokoro-82M), Apache-2.0-licensed TTS model with code available on [GitHub](https://github.com/hexgrad/kokoro). Cloud engines are available when you want a hosted voice or provider-specific model.
 
-For example, you could say:
+## What It Does
 
-> "I have a chapter saved as chapter3.txt. Convert it to an MP3 file."
+The default workflow is transcript-first:
 
-Claude reads the chapter, prepares a narration-ready version of the text, calls the TTS API, and saves the audio file to your computer. If you want video instead of audio, it generates an MP4 with a title card, ready for YouTube.
+1. Prepare a narration transcript from Markdown, TXT, HTML, EPUB, or PDF.
+2. Review or edit the narration text.
+3. Render MP3 audio, or MP4 video with a title card.
+4. Save a clean transcript beside the output for captions or accessibility.
 
-Here's what happens step by step:
+This keeps the source text inspectable before any text-to-speech credits are spent or any long audio job is run.
 
-1. **Claude reads your content** and summarizes it (word count, estimated duration)
-2. **Claude prepares it for audio** — your text is preserved in full, but footnotes, superscripts, and raw table data are stripped, and formatting is adjusted for natural-sounding speech. You review and approve before anything is generated.
-3. **You choose the format:** MP3 (audio only) or MP4 (video with title card)
-4. **Claude generates the file** and reports the size and duration
-5. **A transcript is created** alongside the audio, ready for YouTube captions or accessibility
+## Install
 
-## What Is an API Key?
+### macOS
 
-An API key is a password that gives software permission to access a service on your behalf. You sign up at the provider's website, generate a key, and paste it into your setup. That's it.
+```bash
+brew install ffmpeg espeak-ng
+pipx install git+https://github.com/Brehove/tts-toolkit.git
+tts-toolkit setup
+```
 
-You'll need a key from one of these TTS providers:
+Or with `uv`:
 
-- **Google Gemini** (recommended) — [Get a key at Google AI Studio](https://aistudio.google.com/apikey). Best voice quality. A typical textbook chapter costs around $0.25.
-- **Mistral** (cheapest) — [Get a key at Mistral Console](https://console.mistral.ai/home). Currently free for most usage. Good quality, slightly flatter intonation than Gemini.
+```bash
+brew install ffmpeg espeak-ng
+uv tool install git+https://github.com/Brehove/tts-toolkit.git
+tts-toolkit setup
+```
 
-Both providers offer free usage tiers, so you can experiment before setting up billing.
+`tts-toolkit setup` runs one tiny Kokoro test. The first run may download the Kokoro model files into your normal local model cache.
 
-## Installation
-
-### What You'll Need
-
-- **An AI coding tool**: Claude Code, Claude Cowork, or OpenAI Codex. This is what talks to the API for you. If you don't have one yet, [Claude Cowork](https://claude.ai) is the most accessible option (visual interface, no terminal required).
-- **An API key** from Google or Mistral (see above).
-- **Python 3.10+** and **[ffmpeg](https://ffmpeg.org/download.html)** installed on your computer. If you're not sure whether you have these, ask Claude or Codex: *"Do I have Python and ffmpeg installed?"* It will check for you.
-
-### Option A: Claude Cowork (recommended for most faculty)
-
-Cowork is the visual, non-terminal version of Claude, available at [claude.ai](https://claude.ai) and in the Claude desktop app.
-
-1. **Download the skill**: Click the green **Code** button on this GitHub page, then **Download ZIP**.
-2. **Open Cowork**: Go to [claude.ai](https://claude.ai) or open the Claude desktop app and switch to the **Cowork** tab.
-3. **Upload the skill**: Click **Customize** in the left sidebar, then **Skills**, then the **+** button, then **+ Create skill**, and upload the ZIP file you downloaded.
-4. **Set up your API key**: When you first use the skill, Claude will ask for your API key. Paste it in when prompted.
-
-Once installed, the skill appears in your Skills list and Claude will use it automatically when you ask it to narrate content.
-
-### Option B: Claude Code (CLI / desktop app)
-
-Claude Code is the terminal-based version. If you're comfortable with the command line:
-
-1. **Clone and install dependencies**:
+### Local Development
 
 ```bash
 git clone https://github.com/Brehove/tts-toolkit.git
 cd tts-toolkit
-pip install -r requirements.txt
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+tts-toolkit doctor
 ```
 
-2. **Set up your API key**:
+## Basic Use
+
+Prepare a narration transcript:
 
 ```bash
-cp .env.example .env
+tts-toolkit prepare reading.md
 ```
 
-Open `.env` in any text editor and paste in your API key.
-
-3. **Register the skill**:
+Render the reviewed transcript to an LMS/OER-friendly MP3:
 
 ```bash
-cp -r . ~/.claude/skills/tts-toolkit
+tts-toolkit render reading_narration.txt --output reading.mp3
 ```
 
-### Option C: OpenAI Codex
+Do both in one command:
 
-If you use Codex instead of Claude, you can still use this toolkit. Clone the repo, install the dependencies, and point Codex at the `SKILL.md` file. Codex will follow the same workflow.
+```bash
+tts-toolkit convert reading.html --output reading.mp3
+```
 
-## Using It
+Create a static-title-card video:
 
-Tell Claude (or Codex) what you want narrated. Examples:
+```bash
+tts-toolkit render reading_narration.txt \
+  --title "Week 3 Reading" \
+  --subtitle "Introduction to Ethics" \
+  --output reading.mp4
+```
 
-- *"Turn this chapter into an audio file"*
-- *"Make an MP3 of this article for my students"*
-- *"Create a narrated video of Chapter 3 with a title card"*
+## Inputs
 
-For video output, you can optionally provide a background image and subtitle (like a course name). If you don't, Claude generates a clean dark title card.
+Supported source formats:
 
-## Engine and Voice Options
+- Markdown: `.md`, `.markdown`
+- Plain text: `.txt`
+- HTML: `.html`, `.htm`
+- EPUB: `.epub`
+- PDF: `.pdf`
 
-The skill defaults to **Gemini 2.5 Pro TTS** (best quality). To use a cheaper engine, just ask:
+The prepare step strips or softens elements that usually sound bad in TTS: footnote markers, raw tables, figures, captions, references, bibliography sections, navigation, and page chrome. Tables become a short spoken placeholder rather than row-by-row narration.
 
-- *"Use Gemini Flash instead"* — about half the cost of Pro, still good quality
-- *"Switch to Mistral TTS"* — cheapest option, currently free for most usage (requires a Mistral API key and `pip install mistralai`)
+Markdown, TXT, and HTML are the cleanest inputs. EPUB is usually reliable because it is packaged HTML. PDF support is best-effort for born-digital PDFs; scanned PDFs should be OCRed first, and dense layouts may need transcript review.
 
-The default voice is "Enceladus" (clear, slightly breathy). **Gemini voices** include Enceladus, Kore, Puck, Zephyr, and 26+ others. You can ask Claude to switch:
+## Outputs
 
-- *"Use the Kore voice, it's more firm"*
+Default MP3 output is intentionally size-conscious:
 
-## Uploading to YouTube
+- `standard`: 64kbps mono MP3, good default for LMS and OER upload limits
+- `small`: 48kbps mono MP3
+- `high`: 128kbps stereo MP3
 
-For MP4 output, the skill generates a `transcript.txt` alongside the video. To add captions in YouTube:
+Example:
 
-1. Go to **Subtitles > Add Language > Upload File**
-2. Choose **"Without timing"**
-3. Upload `transcript.txt` — YouTube auto-syncs it to the audio
+```bash
+tts-toolkit render reading_narration.txt --output reading.mp3 --quality high
+```
 
-## Technical Details
+MP4 output uses a 1920x1080 title card plus narrated audio.
 
-- **Parallel generation** — long narrations are split into chunks and generated concurrently for speed
-- **Title cards** — auto-generated at 1920x1080; background images are center-cropped without stretching
-- **Audio quality** — MP3 at ~190kbps VBR; MP4 uses 44.1kHz stereo AAC
-- **Cross-platform** — works on macOS, Linux, and Windows
+## Engines
+
+Kokoro is the default and requires no API key:
+
+```bash
+tts-toolkit render reading_narration.txt --output reading.mp3
+```
+
+Cloud engines are included in the install, but they only run when selected
+and when the matching API key is available:
+
+```bash
+tts-toolkit render reading_narration.txt --output reading.mp3 \
+  --engine elevenlabs --voice JBFqnCBsd6RMkjVDRZzb
+
+tts-toolkit render reading_narration.txt --output reading.mp3 \
+  --engine openai --voice cedar
+
+tts-toolkit render reading_narration.txt --output reading.mp3 \
+  --engine gemini-flash --voice Enceladus
+
+tts-toolkit render reading_narration.txt --output reading.mp3 \
+  --engine mistral --voice "Oliver - Cheerful"
+```
+
+Copy `.env.example` to `.env` and add only the keys you need:
+
+- `ELEVENLABS_API_KEY`
+- `OPENAI_API_KEY`
+- `GOOGLE_API_KEY`
+- `MISTRAL_API_KEY`
+
+## Agent Skills
+
+This repo includes installable skill folders for Claude and Codex.
+
+Claude:
+
+```bash
+cp -R skills/claude/tts-toolkit ~/.claude/skills/tts-toolkit
+```
+
+Codex:
+
+```bash
+cp -R skills/codex/tts-toolkit ~/.codex/skills/tts-toolkit
+```
+
+Once installed, ask your agent for things like:
+
+- "Turn this Markdown reading into an MP3 for my LMS."
+- "Prepare this HTML chapter as narration, then let me review it."
+- "Use Kokoro to make an audio companion for this module page."
+- "Use ElevenLabs for this one, but keep the transcript-first workflow."
+
+## Why This Exists
+
+Generic audiobook tools often center EPUB conversion. TTS Toolkit is narrower and more practical for teaching: take the text instructors actually have, clean it into listenable narration, and produce upload-ready audio without making an entire publishing pipeline mandatory.
 
 ## License
 

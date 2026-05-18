@@ -1,13 +1,12 @@
 # Narration Rules
 
-Use these rules when converting Markdown, TXT, HTML, EPUB, or PDF into narration-ready
-text for TTS Toolkit.
+Use these rules when preparing Markdown, TXT, HTML, EPUB, or PDF for TTS narration.
 
 ## Include
 
-- Body paragraphs in full; do not summarize unless the user asks for a summary
-- Important callouts, examples, sidebars, and highlighted content
-- Spoken section headings at major boundaries so listeners can track structure
+- Body paragraphs in full
+- Important callouts, sidebars, examples, and highlighted content
+- Spoken section headings at major boundaries
 
 ## Exclude Or Replace
 
@@ -24,9 +23,5 @@ text for TTS Toolkit.
 - Keep long parentheticals from interrupting the main sentence
 - Insert `[SECTION]` on its own line between major sections
 
-## Review Standard
-
 Preserve the author's meaning and body text. The goal is listenable narration,
-not a summary. Review the generated narration before rendering long audio,
-especially if the source includes tables, footnotes, dense headings, or LMS
-page chrome.
+not a summary.
